@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import React ,{ useState, useEffect } from 'react'
 import Axios from 'axios'
 import './App.css'
+import './index.css'
 
 function App() {
   const [weather, setWeather] = useState({})
