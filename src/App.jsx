@@ -1,33 +1,62 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState, useEffect } from 'react'
+import Axios from 'axios'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [weather, setWeather] = useState({})
+  const [location, setLocation] = useState(``)
 
+
+
+  useEffect(() => {
+    const fetchData = async () => 
+    {
+      try {
+        const result = await Axios.get(`http://api.weatherapi.com/v1/forecast.json?key=${import.meta.env.VITE_WEATHER_API}&q=${location}&days=4&aqi=yes&alerts=yes`)
+      setWeather(result.data)
+      console.log(result)
+    } catch (error) {
+      console.log(error)
+    }
+    };
+    if (location) 
+    {
+      fetchData()
+    }
+    
+  }, [location])
+
+
+  const handleLocationChange =(e) => {
+    setLocation(e.target.value)
+  }
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+    <div className='app-container'>
+    <h1 className='app-title'>Weather App</h1>
+    <div className='input-container'>
+      <input
+        className='app-input'
+        type='text'
+        placeholder='Enter a city'
+        onChange={handleLocationChange}
+      />
+    </div>
+    </div>
+    <div>
+      {weather.current && (
+        <div className='weather-container'>
+          {weather.forecast.forecastday.map((day) => (
+          <div className='weather-card' key={day.date}>
+            <h2 className='date'> {day.date}</h2>
+            <img src={day.day.condition.icon} alt='weather icon' />
+            {/* <img src={data.current.condition.icon} alt="" /> */}
+
+          </div>
+          ))}
+        </div>
+      )}
+    </div>  
     </>
   )
 }
